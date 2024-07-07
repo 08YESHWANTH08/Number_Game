@@ -38,15 +38,6 @@
     -fx-border-radius: 5px;
 }
 
-/* ComboBox styles */
-.combo-box {
-    -fx-font-size: 14px;
-    -fx-padding: 5px;
-    -fx-border-color: #ccc;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-}
-
 /* Result area styles */
 .result-area {
     -fx-font-size: 16px;
@@ -68,4 +59,10 @@
     -fx-font-size: 12px;
     -fx-text-fill: #666;
     -fx-padding: 5px;
+}
+
+/* Rounds won label */
+.rounds-won-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
 }

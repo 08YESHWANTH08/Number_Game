@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.Random;
-
+//extends javafx application to use JavaFX UI/UX components
 public class Main extends Application {
 
     private Stage window;
@@ -22,27 +22,35 @@ public class Main extends Application {
     private int targetNumber, attemptsLeft, roundsLeft, roundsWon, minRange, maxRange;
 
     private static final String CSS_PATH = "application.css";
-    private static final int SCENE_WIDTH = 400;
-    private static final int SCENE_HEIGHT = 200;
+    private static final int SCENE_WIDTH = 650;
+    private static final int SCENE_HEIGHT = 250;
 
     @Override
+    /*application window setup and triggered to display*/
     public void start(Stage primaryStage) {
         window = primaryStage;
         window.setTitle("Number Guessing Game");
 
         setupScene = createSetupScene();
         window.setScene(setupScene);
+        window.setMinWidth(650);
+        window.setMinHeight(250);
         window.show();
     }
-
+    /*Game Setting up window design*/
     private Scene createSetupScene() {
+    	//A layout will be created
         GridPane setupGrid = new GridPane();
         setupGrid.setPadding(new Insets(20, 20, 20, 20));
+        //gap between two rows
         setupGrid.setVgap(15);
+        //gap between two columns
         setupGrid.setHgap(10);
+        //css styling for the layout
         setupGrid.getStyleClass().add("grid-pane");
 
         Label rangeLabel = new Label("Enter Range:");
+        //to specify the position of the label setConstraints(label,col,row	) uses
         GridPane.setConstraints(rangeLabel, 0, 0);
         rangeLabel.getStyleClass().add("label");
 
@@ -79,8 +87,10 @@ public class Main extends Application {
         startButton.getStyleClass().add("button");
 
         setupGrid.getChildren().addAll(rangeLabel, rangeMinInput, rangeMaxInput, attemptsLabel, attemptsInput, roundsLabel, roundsInput, startButton);
+        /*setupGrid helps to implement the above mentioned design 
+         to be displayed in the game setup window which are all just defined previously.*/
         startButton.setOnAction(e -> handleStartGame());
-
+        //setOnAction helps to trigger the game window with given game setup inputs
         setupScene = new Scene(setupGrid, SCENE_WIDTH, SCENE_HEIGHT);
         setupScene.getStylesheets().add(getClass().getResource(CSS_PATH).toExternalForm());
 
@@ -117,6 +127,8 @@ public class Main extends Application {
             }
         });
     }
+    //whenever enter is entered after giving a input in a text field it will retain and 
+    //alert message will be displayed if enter is just entered without any value
 
     private boolean isSetupInputValid() {
         return !rangeMinInput.getText().isEmpty() && !rangeMaxInput.getText().isEmpty() &&
@@ -124,6 +136,7 @@ public class Main extends Application {
     }
 
     private void handleStartGame() {
+    	//input values are fetched from game setup window using getText function
         String minInput = rangeMinInput.getText();
         String maxInput = rangeMaxInput.getText();
         String attemptsInputText = attemptsInput.getText();
@@ -135,6 +148,7 @@ public class Main extends Application {
         }
 
         try {
+        	//string to integer conversion using parseInt
             minRange = Integer.parseInt(minInput);
             maxRange = Integer.parseInt(maxInput);
             attemptsLeft = Integer.parseInt(attemptsInputText);
@@ -176,7 +190,7 @@ public class Main extends Application {
 
         roundsWonLabel = new Label("Rounds won: " + roundsWon);
         roundsWonLabel.getStyleClass().add("rounds-won-label");
-
+        //when submit button is hit
         submitGuessButton.setOnAction(e -> handleGuess());
 
         gameLayout.getChildren().addAll(guessLabel, guessInput, submitGuessButton, feedbackLabel, roundsWonLabel);
@@ -201,6 +215,13 @@ public class Main extends Application {
 
         try {
             int guess = Integer.parseInt(guessText);
+
+            // Check if guess is within range
+            if (guess < minRange || guess > maxRange) {
+                showAlert("Out of Range", "Please enter a number within the range " + minRange + " to " + maxRange + ".");
+                return;
+            }
+
             attemptsLeft--;
 
             if (guess == targetNumber) {
@@ -240,17 +261,12 @@ public class Main extends Application {
     }
 
     private void displayScore() {
-        Alert scoreAlert = new Alert(Alert.AlertType.INFORMATION);
-        scoreAlert.setTitle("Game Over");
-        scoreAlert.setHeaderText(null);
-        scoreAlert.setContentText("Game Over! You won " + roundsWon + " out of " + roundsInput.getText() + " rounds.");
-        scoreAlert.showAndWait();
-
+        showAlert("Game Over", "Congratulations! You won " + roundsWon + " out of " + roundsInput.getText() + " rounds.");
         window.setScene(setupScene);
     }
 
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
